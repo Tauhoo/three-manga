@@ -2,14 +2,18 @@
   "name": "three-manga",
   "version": "1.0.0",
   "description": "A library that provides manga like shader for ThreeJS",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/umd/index.js",
+  "types": "dist/types/index.d.ts",
+  "module": "dist/esm/index.js",
   "files": [
     "/dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "rm -rf dist && npm run build-esm && npm run build-umd && npm run build-browser",
+    "build-esm": "tsc -p tsconfig.esm.json",
+    "build-umd": "tsc -p tsconfig.umd.json",
+    "build-browser": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +26,12 @@
   },
   "homepage": "https://github.com/Tauhoo/three-manga#readme",
   "devDependencies": {
-    "typescript": "^5.1.3"
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.1.3",
+    "webpack": "^5.85.1",
+    "webpack-cli": "^5.1.3"
+  },
+  "dependencies": {
+    "path": "^0.12.7"
   }
 }

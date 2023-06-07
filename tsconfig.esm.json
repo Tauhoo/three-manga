@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "outDir": "./dist/esm",
+    "declaration": false,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"]
+}
