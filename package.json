@@ -1,0 +1,27 @@
+{
+  "name": "three-manga",
+  "version": "1.0.0",
+  "description": "A library that provides manga like shader for ThreeJS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tauhoo/three-manga.git"
+  },
+  "author": "Wachirawit Wacharak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tauhoo/three-manga/issues"
+  },
+  "homepage": "https://github.com/Tauhoo/three-manga#readme",
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}
