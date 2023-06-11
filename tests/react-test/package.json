@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/three": "^0.152.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "three": "^0.153.0",
     "three-manga": "file:../.."
   },
   "devDependencies": {

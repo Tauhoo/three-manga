@@ -1,5 +1,3 @@
-import test from './test'
-export function helloworld() {
-  console.log('helloworld')
-}
-export default test
+import MangaMaterial from './MangaMaterial'
+import FaceNormalMaterial from './FaceNormalMaterial'
+export { MangaMaterial, FaceNormalMaterial }

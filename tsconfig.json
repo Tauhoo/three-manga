@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "ES2015",
     "module": "ES2015",
-    "outDir": "./dist/esm",
     "declaration": false,
-    "esModuleInterop": true
+    "moduleResolution": "nodenext"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
