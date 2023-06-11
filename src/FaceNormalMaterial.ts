@@ -8,6 +8,7 @@ class FaceNormalMaterial extends THREE.ShaderMaterial {
     this.type = 'FaceNormalMaterial'
     this.fragmentShader = faceNormalFragment
     this.vertexShader = faceNormalVertex
+    this.glslVersion = THREE.GLSL3
   }
 }
 

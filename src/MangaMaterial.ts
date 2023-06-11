@@ -3,6 +3,7 @@ class MangaMaterial extends THREE.ShaderMaterial {
   constructor() {
     super()
     this.type = 'MangaMaterial'
+    this.glslVersion = THREE.GLSL3
   }
 }
 

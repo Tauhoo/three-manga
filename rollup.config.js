@@ -14,9 +14,8 @@ module.exports = {
             preserveModules: true,
         },
         {
-            file: 'dist/iife/index.bundle.js',
-            format: 'iife',
-            name: 'ThreeManga'
+            file: 'dist/browser/index.module.bundle.js',
+            format: 'esm',
         }
     ],
     plugins: [
