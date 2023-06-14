@@ -29,7 +29,7 @@
     <script type="module">
         import * as THREE from "three"
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-        import { FaceNormalMaterial } from "three-manga"
+        import { MangaMaterial } from "three-manga"
         const renderer = new THREE.WebGLRenderer({ alpha: true })
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.pixelRatio = window.devicePixelRatio
@@ -44,7 +44,7 @@
         const controls = new OrbitControls(camera, renderer.domElement)
 
         const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
-        const material = new FaceNormalMaterial()
+        const material = new MangaMaterial()
         const mesh = new THREE.Mesh(geometry, material)
 
         scene.add(mesh)

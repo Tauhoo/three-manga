@@ -1,5 +1,5 @@
 const typescript = require('@rollup/plugin-typescript')
-const glsl = require('rollup-plugin-glsl')
+const glslLoader = require('rollup-plugin-glsl-loader')
 
 module.exports = {
     input: 'src/index.ts',
@@ -20,8 +20,6 @@ module.exports = {
     ],
     plugins: [
         typescript(),
-        glsl({
-            include: '**/*.glsl',
-        }),
+        glslLoader(),
     ],
 }
