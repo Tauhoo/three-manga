@@ -46,7 +46,9 @@ class MangaShaderManager {
   update = () => {
     let currentRenderTarget = this.renderer.getRenderTarget()
     this.renderer.setRenderTarget(this.faceNormalRenderer)
+    this.uniform.uMode.value = MangaShaderMode.FACE_NORMAL_MODE
     this.renderer.render(this.scene, this.camera)
+    this.uniform.uMode.value = MangaShaderMode.MANGA_MODE
     this.renderer.setRenderTarget(currentRenderTarget)
   }
 }
