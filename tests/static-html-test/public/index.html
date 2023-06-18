@@ -13,6 +13,7 @@
         body {
             padding: 0;
             margin: 0;
+            background-color: antiquewhite;
         }
     </style>
     <div id="root" style="width: 100vw; height: 100vh;"></div>
@@ -29,7 +30,9 @@
     <script type="module">
         import * as THREE from "three"
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-        import { MangaMaterial } from "three-manga"
+        import { MangaShaderManager } from "three-manga"
+        const mangaShaderManager = new MangaShaderManager()
+        console.log(mangaShaderManager);
         const renderer = new THREE.WebGLRenderer({ alpha: true })
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.pixelRatio = window.devicePixelRatio
@@ -44,8 +47,8 @@
         const controls = new OrbitControls(camera, renderer.domElement)
 
         const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
-        const material = new MangaMaterial()
-        const mesh = new THREE.Mesh(geometry, material)
+        const material = new THREE.MeshStandardMaterial({ color: 'gray' })
+        const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
 
         scene.add(mesh)
         camera.position.z = 3

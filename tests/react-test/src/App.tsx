@@ -21,7 +21,6 @@ function App() {
     const camera = cameraRef.current
     const scene = sceneRef.current
     const controls = controlsRef.current
-
     controls.update()
     renderer.render(scene, camera)
 

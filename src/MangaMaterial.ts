@@ -1,16 +1,23 @@
 import * as THREE from 'three'
-// import mangaFragment from './shader/manga_fragment.glsl'
-// import mangaVertex from './shader/manga_vertex.glsl'
-import shader from './shader'
+import { mangaFragment, mangaVertex, MangaShaderMode } from './shader'
+
+type MangaUniform = {
+  uMode: THREE.IUniform<MangaShaderMode>
+}
 
 class MangaMaterial extends THREE.ShaderMaterial {
-  constructor() {
+  readonly uniforms: { [uniform: string]: THREE.IUniform }
+  readonly vertexShader: string
+  readonly fragmentShader: string
+
+  constructor(uniforms: MangaUniform) {
     super()
     this.type = 'MangaMaterial'
-    this.fragmentShader = shader.mangaFragment
-    this.vertexShader = shader.mangaVertex
+    this.fragmentShader = mangaFragment
+    this.vertexShader = mangaVertex
     this.glslVersion = THREE.GLSL3
+    this.uniforms = uniforms
   }
 }
 
-export default MangaMaterial
+export { MangaMaterial, MangaUniform, MangaShaderMode }

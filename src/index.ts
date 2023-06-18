@@ -1,3 +1,3 @@
-import MangaMaterial from './MangaMaterial'
+import MangaShaderManager from './MangaShaderManager'
 
-export { MangaMaterial }
+export { MangaShaderManager }

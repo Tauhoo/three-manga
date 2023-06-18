@@ -3,4 +3,9 @@ import * as THREE from 'three'
 import mangaFragment from './manga_fragment.glsl'
 import mangaVertex from './manga_vertex.glsl'
 
-export default { mangaFragment, mangaVertex }
+class MangaShaderMode {
+  static readonly FACE_NORMAL_MODE = 0
+  static readonly MANGA_MODE = 1
+}
+
+export { mangaFragment, mangaVertex, MangaShaderMode }
