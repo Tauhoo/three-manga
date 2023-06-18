@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { MangaMaterial } from 'three-manga'
+import { MangaShaderManager } from 'three-manga'
 
 function App() {
   const containerRef = useRef<HTMLDivElement>(null)

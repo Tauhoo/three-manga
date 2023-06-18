@@ -31,8 +31,7 @@
         import * as THREE from "three"
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
         import { MangaShaderManager } from "three-manga"
-        const mangaShaderManager = new MangaShaderManager()
-        console.log(mangaShaderManager);
+
         const renderer = new THREE.WebGLRenderer({ alpha: true })
         renderer.setSize(window.innerWidth, window.innerHeight)
         renderer.pixelRatio = window.devicePixelRatio
@@ -45,6 +44,14 @@
             1000
         )
         const controls = new OrbitControls(camera, renderer.domElement)
+        const mangaShaderManager = new MangaShaderManager({
+            renderer: renderer,
+            scene: scene,
+            camera: camera,
+            lightInfoList: [],
+            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
+        })
+        console.log(mangaShaderManager);
 
         const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
         const material = new THREE.MeshStandardMaterial({ color: 'gray' })
