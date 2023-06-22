@@ -10,18 +10,22 @@ function App() {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
+  const mangaShaderManagerRef = useRef<MangaShaderManager | null>(null)
 
   const animate = () => {
     if (rendererRef.current == null) return
     if (cameraRef.current == null) return
     if (sceneRef.current == null) return
     if (controlsRef.current == null) return
+    if (mangaShaderManagerRef.current == null) return
 
     const renderer = rendererRef.current
     const camera = cameraRef.current
     const scene = sceneRef.current
     const controls = controlsRef.current
+    const mangaShaderManager = mangaShaderManagerRef.current
     controls.update()
+    mangaShaderManager.update()
     renderer.render(scene, camera)
 
     window.requestAnimationFrame(animate)
@@ -32,6 +36,7 @@ function App() {
     if (cameraRef.current !== null) return
     if (sceneRef.current !== null) return
     if (controlsRef.current !== null) return
+    if (mangaShaderManagerRef.current !== null) return
     if (containerRef.current == null) return
 
     const renderer = new THREE.WebGLRenderer({ alpha: true })
@@ -46,10 +51,16 @@ function App() {
       1000
     )
     const controls = new OrbitControls(camera, renderer.domElement)
+    const mangaShaderManager = new MangaShaderManager({
+      renderer: renderer,
+      scene: scene,
+      camera: camera,
+      lightInfoList: [],
+      resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+    })
 
     const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
-    const material = new MangaMaterial()
-    const mesh = new THREE.Mesh(geometry, material)
+    const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
 
     scene.add(mesh)
     camera.position.z = 3

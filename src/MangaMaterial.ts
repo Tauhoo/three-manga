@@ -10,8 +10,11 @@ type LightInfo = {
 type MangaUniform = {
   uMode: THREE.IUniform<MangaShaderMode>
   uLightInfos: THREE.IUniform<LightInfo[]>
-  uNormalMap?: THREE.IUniform<THREE.Texture>
+  uNormalMap: THREE.IUniform<THREE.Texture | null>
+  uDeptMap: THREE.IUniform<THREE.Texture | null>
   uResolution: THREE.IUniform<THREE.Vector2>
+  uOutlinePixelStep: THREE.IUniform<number>
+  uInlinePixelStep: THREE.IUniform<number>
 }
 
 type MangaMaterialParams = {
