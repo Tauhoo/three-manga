@@ -13,7 +13,7 @@
         body {
             padding: 0;
             margin: 0;
-            background-color: antiquewhite;
+            background-color: gray;
         }
     </style>
     <div id="root" style="width: 100vw; height: 100vh;"></div>
@@ -50,7 +50,11 @@
             scene: scene,
             camera: camera,
             lightInfoList: [],
-            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
+            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+            outlinePixelStep: 1,
+            outlineThreshold: 0.005,
+            intlinePixelStep: 1,
+            inlineThreshold: 0.5,
         })
         console.log(window.innerWidth, window.innerHeight);
 

@@ -17,6 +17,6 @@ vec3 getNormalFromTexel(sampler2D inTexture, vec2 position, vec2 resolution){
 }
 
 
-vec4 getDeptRGBA(float v){
-    return packDepthToRGBA(v);
+vec4 getDeptRGBA(float z){
+    return packDepthToRGBA(z * 0.5 + 0.5);
 }

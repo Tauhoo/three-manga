@@ -13,7 +13,9 @@ type MangaShaderManagerParams = {
   lightInfoList: LightInfo[]
   resolution: THREE.Vector2
   outlinePixelStep?: number
+  outlineThreshold?: number
   intlinePixelStep?: number
+  inlineThreshold?: number
 }
 
 class MangaShaderManager {
@@ -47,7 +49,9 @@ class MangaShaderManager {
       uDeptMap: { value: null },
       uResolution: { value: params.resolution },
       uOutlinePixelStep: { value: params.outlinePixelStep || 2 },
+      uOutlineThreshold: { value: params.outlineThreshold || 0.5 },
       uInlinePixelStep: { value: params.intlinePixelStep || 2 },
+      uInlineThreshold: { value: params.inlineThreshold || 0.5 },
     }
 
     this.material = new MangaMaterial({
@@ -57,24 +61,29 @@ class MangaShaderManager {
   }
 
   update = () => {
+    // clear data
+    let currentRenderTarget = this.renderer.getRenderTarget()
+    let currentRenderBackground = this.scene.background
     this.uniform.uDeptMap.value = null
     this.uniform.uNormalMap.value = null
+    this.scene.background = new THREE.Color(255, 255, 255)
 
-    let currentRenderTarget = this.renderer.getRenderTarget()
+    // render face normal map
     this.renderer.setRenderTarget(this.faceNormalRenderer)
     this.uniform.uMode.value = MangaShaderMode.FACE_NORMAL_MODE
     this.renderer.render(this.scene, this.camera)
 
-    this.uniform.uNormalMap.value = this.faceNormalRenderer.texture
+    // render dept map
     this.renderer.setRenderTarget(this.deptRenderer)
     this.uniform.uMode.value = MangaShaderMode.DEPT_MODE
     this.renderer.render(this.scene, this.camera)
 
-    this.renderer.setRenderTarget(currentRenderTarget)
-    this.uniform.uMode.value = MangaShaderMode.MANGA_MODE
-
+    // restore data
     this.uniform.uDeptMap.value = this.deptRenderer.texture
     this.uniform.uNormalMap.value = this.faceNormalRenderer.texture
+    this.uniform.uMode.value = MangaShaderMode.MANGA_MODE
+    this.renderer.setRenderTarget(currentRenderTarget)
+    this.scene.background = currentRenderBackground
   }
 }
 

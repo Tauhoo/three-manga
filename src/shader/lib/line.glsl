@@ -1,25 +1,32 @@
 #include "texture.glsl"
 
 float getOutlinePixelScale(sampler2D deptMap, vec2 position, vec2 resolution, float pixelStep){
+    float xPixelSize = 100.0 / resolution.x;
+    float yPixelSize = 100.0 / resolution.y;
 
     // vertical detection
-    float result = 0.0;
+    float verticalResult = 0.0;
     for(float index = 0.0; index < 3.0; index++){
         float offset = index - 1.0;
-        float from = getDeptFromTexel(deptMap, vec2(position.x + pixelStep, position.y + offset * pixelStep), resolution);
-        float to = getDeptFromTexel(deptMap, vec2(position.x - pixelStep, position.y + offset * pixelStep), resolution);
-        result += abs(from - to);
+        float contrastScale = 2.0 - abs(offset);
+        float from = getDeptFromTexel(deptMap, vec2(position.x + pixelStep * xPixelSize, position.y + offset * pixelStep * yPixelSize), resolution);
+        float to = getDeptFromTexel(deptMap, vec2(position.x - pixelStep * xPixelSize, position.y + offset * pixelStep * yPixelSize), resolution);
+        verticalResult += (to - from) * contrastScale;
     }
+    float verticalOutlineScale = abs(verticalResult / 4.0);
 
     // horizontal detection
+    float horizontalResult = 0.0;
     for(float index = 0.0; index < 3.0; index++){
         float offset = index - 1.0;
-        float from = getDeptFromTexel(deptMap, vec2(position.x + offset * pixelStep, position.y + pixelStep), resolution);
-        float to = getDeptFromTexel(deptMap, vec2(position.x - offset * pixelStep, position.y + pixelStep), resolution);
-        result += abs(from - to);
+        float contrastScale = 2.0 - abs(offset);
+        float from = getDeptFromTexel(deptMap, vec2(position.x + offset * pixelStep * xPixelSize, position.y - pixelStep * yPixelSize), resolution);
+        float to = getDeptFromTexel(deptMap, vec2(position.x + offset * pixelStep * xPixelSize, position.y + pixelStep * yPixelSize), resolution);
+        horizontalResult += (from - to) * contrastScale;
     }
+    float horizontalOutlineScale = abs(horizontalResult / 4.0);
 
-    return result / 6.0;
+    return max(verticalOutlineScale, horizontalOutlineScale);
 }
 
 float getInlinePixelScale(sampler2D normalMap, vec2 position, vec2 resolution, float pixelStep){

@@ -14,7 +14,9 @@ type MangaUniform = {
   uDeptMap: THREE.IUniform<THREE.Texture | null>
   uResolution: THREE.IUniform<THREE.Vector2>
   uOutlinePixelStep: THREE.IUniform<number>
+  uOutlineThreshold: THREE.IUniform<number>
   uInlinePixelStep: THREE.IUniform<number>
+  uInlineThreshold: THREE.IUniform<number>
 }
 
 type MangaMaterialParams = {
