@@ -1,5 +1,25 @@
 #include "texture.glsl"
 
+bool isHigherOutlinePixel(sampler2D deptMap, vec2 position, vec2 resolution, float pixelStep){
+    float xPixelSize = 100.0 / resolution.x;
+    float yPixelSize = 100.0 / resolution.y;
+    float scale = 0.;
+    for(float i = 0.; i < 3.; i++){
+        float xOffset = i - 1.;
+        for(float j = 0.; j < 3.; j++){
+            float yOffset = j - 1.;
+            float dept = getDeptFromTexel(deptMap, vec2(position.x + xOffset * pixelStep * xPixelSize, position.y + yOffset * pixelStep * yPixelSize), resolution);
+            if(i == 1. && j == 1.){
+                scale += dept * 8.;
+            }else{
+                scale += dept * -1.;
+            }
+        }
+    }
+
+    return scale > 0.0;
+}
+
 float getOutlinePixelScale(sampler2D deptMap, vec2 position, vec2 resolution, float pixelStep){
     float xPixelSize = 100.0 / resolution.x;
     float yPixelSize = 100.0 / resolution.y;

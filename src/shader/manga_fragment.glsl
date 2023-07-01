@@ -22,8 +22,8 @@ uniform float uInlinePixelStep;
 uniform float uInlineThreshold;
 
 in vec3 vGlobalPosition;
+in vec3 vGlobalOriginPosition;
 in vec3 vPosition;
-in float vDistanceFromCamera;
 
 out vec4 fragColor;
 
@@ -35,29 +35,29 @@ void main()
     }
 
     if(uMode == DEPT_MODE){
-        fragColor = getDeptRGBA(vDistanceFromCamera);
+        fragColor = getDeptRGBA((vGlobalOriginPosition.z - vGlobalPosition.z) * 0.8);
         return;
     }
     
     if(uMode == MANGA_MODE){
         float outlinePixelScale = getOutlinePixelScale(uDeptMap, gl_FragCoord.xy, uResolution, uOutlinePixelStep);
-        float inlinePixelScale = getInlinePixelScale(uNormalMap, gl_FragCoord.xy, uResolution, uInlinePixelStep);
-
-        if(abs(outlinePixelScale) >  uOutlineThreshold){
+        bool isHigherOutline = isHigherOutlinePixel(uDeptMap, gl_FragCoord.xy, uResolution, uOutlinePixelStep);
+        if(abs(outlinePixelScale) >  uOutlineThreshold && isHigherOutline){
             fragColor = vec4(vec3(0), 1);
             return;
         }
 
+        float inlinePixelScale = getInlinePixelScale(uNormalMap, gl_FragCoord.xy, uResolution, uInlinePixelStep);
         // if(abs(inlinePixelScale) > uInlineThreshold){
         //     fragColor = vec4(0, 1, 0, 1);
         //     return;
         // }
 
         
-        // float dept = getDeptFromTexel(uDeptMap, gl_FragCoord.xy, uResolution);
-        // fragColor = vec4(vec3(dept), 1);
+        float dept = getDeptFromTexel(uDeptMap, gl_FragCoord.xy, uResolution);
+        fragColor = vec4(vec3(dept), 1);
         // fragColor = vec4(vec3(vDistanceFromCamera), 1);
-        fragColor = vec4(vec3(1), 1);
+        // fragColor = vec4(vec3(1), 1);
         return;
     }
 

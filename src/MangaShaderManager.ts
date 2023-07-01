@@ -6,6 +6,8 @@ import {
   LightInfo,
 } from './MangaMaterial'
 
+const blackColor = new THREE.Color(0, 0, 0)
+
 type MangaShaderManagerParams = {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
@@ -34,12 +36,14 @@ class MangaShaderManager {
 
     this.faceNormalRenderer = new THREE.WebGLRenderTarget(
       params.resolution.x,
-      params.resolution.y
+      params.resolution.y,
+      { format: THREE.RGBAFormat }
     )
 
     this.deptRenderer = new THREE.WebGLRenderTarget(
       params.resolution.x,
-      params.resolution.y
+      params.resolution.y,
+      { format: THREE.RGBAFormat }
     )
 
     this.uniform = {
@@ -63,10 +67,16 @@ class MangaShaderManager {
   update = () => {
     // clear data
     let currentRenderTarget = this.renderer.getRenderTarget()
-    let currentRenderBackground = this.scene.background
+    let currentClearColor = this.renderer.getClearColor(new THREE.Color())
+    let currentClearAlpha = this.renderer.getClearAlpha()
+    let currentBackgroundColor = this.scene.background
+
+    this.renderer.setClearColor(blackColor, 0)
+    this.renderer.setClearAlpha(0)
+    this.scene.background = null
+
     this.uniform.uDeptMap.value = null
     this.uniform.uNormalMap.value = null
-    this.scene.background = new THREE.Color(255, 255, 255)
 
     // render face normal map
     this.renderer.setRenderTarget(this.faceNormalRenderer)
@@ -82,8 +92,11 @@ class MangaShaderManager {
     this.uniform.uDeptMap.value = this.deptRenderer.texture
     this.uniform.uNormalMap.value = this.faceNormalRenderer.texture
     this.uniform.uMode.value = MangaShaderMode.MANGA_MODE
+
     this.renderer.setRenderTarget(currentRenderTarget)
-    this.scene.background = currentRenderBackground
+    this.renderer.setClearColor(currentClearColor)
+    this.renderer.setClearAlpha(currentClearAlpha)
+    this.scene.background = currentBackgroundColor
   }
 }
 
