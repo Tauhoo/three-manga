@@ -48,16 +48,18 @@ void main()
         }
 
         float inlinePixelScale = getInlinePixelScale(uNormalMap, gl_FragCoord.xy, uResolution, uInlinePixelStep);
-        // if(abs(inlinePixelScale) > uInlineThreshold){
-        //     fragColor = vec4(0, 1, 0, 1);
-        //     return;
-        // }
+        if(abs(inlinePixelScale) < uInlineThreshold){
+            fragColor = vec4(vec3(0), 1);
+            return;
+        }
 
         
-        float dept = getDeptFromTexel(uDeptMap, gl_FragCoord.xy, uResolution);
-        fragColor = vec4(vec3(dept), 1);
+        // float dept = getDeptFromTexel(uDeptMap, gl_FragCoord.xy, uResolution);
+        // fragColor = vec4(vec3(dept), 1);
+        // vec3 normal = getNormalFromTexel(uNormalMap, gl_FragCoord.xy, uResolution);
+        // fragColor = vec4(normal * .5 + .5, 1);
         // fragColor = vec4(vec3(vDistanceFromCamera), 1);
-        // fragColor = vec4(vec3(1), 1);
+        fragColor = vec4(vec3(1), 1);
         return;
     }
 
