@@ -3,21 +3,41 @@ import {
   MangaUniform,
   MangaMaterial,
   MangaShaderMode,
-  LightInfo,
+  LightInfoUniform,
 } from './MangaMaterial'
-
-const blackColor = new THREE.Color(0, 0, 0)
+import { MangaDirectionalLight, MangaLight } from './light'
 
 type MangaShaderManagerParams = {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
   camera: THREE.Camera
-  lightInfoList: LightInfo[]
+  lightList: MangaLight[]
   resolution: THREE.Vector2
   outlinePixelStep?: number
   outlineThreshold?: number
   intlinePixelStep?: number
   inlineThreshold?: number
+  shadowDepthTexturepixelsPerUnit?: number
+  shadowBias?: number
+}
+
+type LightInfo = {
+  light: MangaLight
+  deptRenderTarget: THREE.WebGLRenderTarget
+}
+
+const blackColor = new THREE.Color(0, 0, 0)
+const dummyLightInfo: LightInfo = {
+  light: new MangaDirectionalLight(),
+  deptRenderTarget: new THREE.WebGLRenderTarget(1, 1, {
+    format: THREE.RGBAFormat,
+  }),
+}
+const dummyLightInfoUniform: LightInfoUniform = {
+  cameraP: dummyLightInfo.light.projectionMatrix,
+  cameraV: dummyLightInfo.light.matrixWorldInverse,
+  position: dummyLightInfo.light.position,
+  deptMap: dummyLightInfo.deptRenderTarget.texture,
 }
 
 class MangaShaderManager {
@@ -28,6 +48,8 @@ class MangaShaderManager {
   private renderer: THREE.WebGLRenderer
   private scene: THREE.Scene
   private camera: THREE.Camera
+  private lightInfoList: LightInfo[]
+  private dummyLightInfoUniformList: LightInfoUniform[]
 
   constructor(params: MangaShaderManagerParams) {
     this.renderer = params.renderer
@@ -46,9 +68,37 @@ class MangaShaderManager {
       { format: THREE.RGBAFormat }
     )
 
+    this.lightInfoList = params.lightList.map<LightInfo>(light => {
+      const lightRenderTarget = new THREE.WebGLRenderTarget(
+        (light.right - light.left) * params.shadowDepthTexturepixelsPerUnit ||
+          1024,
+        (light.top - light.bottom) * params.shadowDepthTexturepixelsPerUnit ||
+          1024,
+        { format: THREE.RGBAFormat }
+      )
+
+      return {
+        light,
+        deptRenderTarget: lightRenderTarget,
+      } as LightInfo
+    })
+
+    const lightInfoUniform = this.lightInfoList.map<LightInfoUniform>(info => {
+      return {
+        cameraP: info.light.projectionMatrix,
+        cameraV: info.light.matrixWorldInverse,
+        position: info.light.position,
+        deptMap: info.deptRenderTarget.texture,
+      } as LightInfoUniform
+    })
+
+    this.dummyLightInfoUniformList = Array(lightInfoUniform.length).fill(
+      dummyLightInfoUniform
+    )
+
     this.uniform = {
       uMode: { value: MangaShaderMode.MANGA_MODE },
-      uLightInfos: { value: params.lightInfoList },
+      uLightInfos: { value: lightInfoUniform },
       uNormalMap: { value: null },
       uDeptMap: { value: null },
       uResolution: { value: params.resolution },
@@ -56,11 +106,12 @@ class MangaShaderManager {
       uOutlineThreshold: { value: params.outlineThreshold || 0.5 },
       uInlinePixelStep: { value: params.intlinePixelStep || 2 },
       uInlineThreshold: { value: params.inlineThreshold || 0.5 },
+      uShadowBias: { value: params.shadowBias || 0.001 },
     }
 
     this.material = new MangaMaterial({
       uniforms: this.uniform,
-      maxLightSources: params.lightInfoList.length,
+      maxLightSources: params.lightList.length,
     })
   }
 
@@ -87,6 +138,16 @@ class MangaShaderManager {
     this.renderer.setRenderTarget(this.deptRenderer)
     this.uniform.uMode.value = MangaShaderMode.DEPT_MODE
     this.renderer.render(this.scene, this.camera)
+
+    // render light dept map
+    const lightInfoUniforms = this.uniform.uLightInfos.value
+    this.uniform.uLightInfos.value = this.dummyLightInfoUniformList
+    for (const info of this.lightInfoList) {
+      this.renderer.setRenderTarget(info.deptRenderTarget)
+      this.uniform.uMode.value = MangaShaderMode.DEPT_MODE
+      this.renderer.render(this.scene, info.light)
+    }
+    this.uniform.uLightInfos.value = lightInfoUniforms
 
     // restore data
     this.uniform.uDeptMap.value = this.deptRenderer.texture

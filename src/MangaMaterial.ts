@@ -1,15 +1,16 @@
 import * as THREE from 'three'
 import { mangaFragment, mangaVertex, MangaShaderMode } from './shader'
 
-type LightInfo = {
+type LightInfoUniform = {
   cameraP: THREE.Matrix4
   cameraV: THREE.Matrix4
-  position: THREE.Vector2
+  position: THREE.Vector3
   deptMap: THREE.Texture
 }
 type MangaUniform = {
   uMode: THREE.IUniform<MangaShaderMode>
-  uLightInfos: THREE.IUniform<LightInfo[]>
+  uLightInfos: THREE.IUniform<LightInfoUniform[]>
+  uShadowBias: THREE.IUniform<number>
   uNormalMap: THREE.IUniform<THREE.Texture | null>
   uDeptMap: THREE.IUniform<THREE.Texture | null>
   uResolution: THREE.IUniform<THREE.Vector2>
@@ -40,4 +41,4 @@ class MangaMaterial extends THREE.ShaderMaterial {
   }
 }
 
-export { MangaMaterial, MangaUniform, MangaShaderMode, LightInfo }
+export { MangaMaterial, MangaUniform, MangaShaderMode, LightInfoUniform }

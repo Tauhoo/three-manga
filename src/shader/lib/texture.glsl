@@ -2,7 +2,7 @@
 
 vec4 getTexel(sampler2D inTexture, vec2 position, vec2 resolution){
     vec2 uv = vec2(position.x / resolution.x, position.y / resolution.y);
-    vec4 texel = texture(inTexture, uv);
+    vec4 texel = texture2D(inTexture, uv);
     return texel;
 }
 

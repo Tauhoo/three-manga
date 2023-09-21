@@ -47,7 +47,7 @@ class MangaShaderManager {
             // restore data
             this.uniform.uDeptMap.value = this.deptRenderer.texture;
             this.uniform.uNormalMap.value = this.faceNormalRenderer.texture;
-            this.uniform.uMode.value = MangaShaderMode.MANGA_MODE;
+            this.uniform.uMode.value = MangaShaderMode.DEPT_MODE;
             this.renderer.setRenderTarget(currentRenderTarget);
             this.renderer.setClearColor(currentClearColor);
             this.renderer.setClearAlpha(currentClearAlpha);

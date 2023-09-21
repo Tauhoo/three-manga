@@ -53,7 +53,7 @@
             resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
             outlinePixelStep: 6,
             outlineThreshold: 0.04,
-            intlinePixelStep: 1,
+            intlinePixelStep: 1.5,
             inlineThreshold: 0.98,
         })
         console.log(window.innerWidth, window.innerHeight);
@@ -65,7 +65,14 @@
 
         const material = new THREE.MeshStandardMaterial({ color: 'gray' })
         const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
+        const obstacleMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 4, 1),
+            mangaShaderManager.material
+            // new THREE.MeshBasicMaterial({ color: 0x000000 }),
+        )
+        obstacleMesh.position.z -= 1.5
 
+        scene.add(obstacleMesh)
         scene.add(mesh)
         camera.position.z = 3
 

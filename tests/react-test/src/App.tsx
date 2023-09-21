@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { MangaShaderManager } from 'three-manga'
+import { MangaDirectionalLight, MangaShaderManager } from 'three-manga'
 
 function App() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -40,6 +40,8 @@ function App() {
     if (containerRef.current == null) return
 
     const renderer = new THREE.WebGLRenderer({ alpha: true })
+    renderer.shadowMap.enabled = true
+
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.pixelRatio = window.devicePixelRatio
     containerRef.current.appendChild(renderer.domElement)
@@ -48,27 +50,44 @@ function App() {
       75,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      10000
     )
     const controls = new OrbitControls(camera, renderer.domElement)
+    const mangaLight = new MangaDirectionalLight()
+    mangaLight.far = 3
+    mangaLight.near = 1
+
+    const mangaLightHelper = new THREE.CameraHelper(mangaLight)
+
     const mangaShaderManager = new MangaShaderManager({
       renderer: renderer,
       scene: scene,
       camera: camera,
-      lightInfoList: [],
+      lightList: [mangaLight],
       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      outlinePixelStep: 2,
+      outlineThreshold: 0.1,
+      intlinePixelStep: 2,
+      inlineThreshold: 0.8,
+      shadowBias: 0.001,
     })
 
     const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
     const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
+    mesh.receiveShadow = true
+    mesh.castShadow = true
 
     scene.add(mesh)
+    scene.add(mangaLight)
+    scene.add(mangaLightHelper)
     camera.position.z = 3
+    mangaLight.position.z += 2
 
     rendererRef.current = renderer
     cameraRef.current = camera
     sceneRef.current = scene
     controlsRef.current = controls
+    mangaShaderManagerRef.current = mangaShaderManager
 
     animate()
   }, [])
