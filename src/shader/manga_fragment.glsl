@@ -13,8 +13,8 @@ uniform float uInlinePixelStep;
 uniform float uInlineThreshold;
 uniform float uShadowBias;
 
-in vec4 vShadowPerspectiveGlobalPosition;
-in vec4 vShadowPerspectiveGlobalOriginPosition;
+in vec4[MAX_LIGHT_SOURCES + 1] vShadowPerspectiveGlobalPosition;
+in vec4[MAX_LIGHT_SOURCES + 1] vShadowPerspectiveGlobalOriginPosition;
 
 out vec4 fragColor;
 
@@ -35,14 +35,15 @@ void main()
     }
 
     // calculate shadow
-    float surfaceDept = (vShadowPerspectiveGlobalOriginPosition.z - vShadowPerspectiveGlobalPosition.z) * 0.8 * 0.5 + 0.5;
-    vec2 shadowDeptMapUV = vShadowPerspectiveGlobalPosition.xy / vShadowPerspectiveGlobalPosition.w;
-
-    float shadowDept = getDeptFromTexel(uLightInfos[0].deptMap, (shadowDeptMapUV + 1.) / 2., vec2(1.));
-    if(surfaceDept + uShadowBias <= shadowDept){
-        fragColor = vec4(vec3(0), 1);
-        return;
+    for(int index = 0; index < MAX_LIGHT_SOURCES; index++){
+        float surfaceDept = (vShadowPerspectiveGlobalOriginPosition[index].z - vShadowPerspectiveGlobalPosition[index].z) * 0.8 * 0.5 + 0.5;
+        vec2 shadowDeptMapUV = vShadowPerspectiveGlobalPosition[index].xy / vShadowPerspectiveGlobalPosition[index].w;
+        float shadowDept = getDeptFromTexel(uLightInfos[0].deptMap, (shadowDeptMapUV + 1.) / 2., vec2(1.)); // TODO: access light info with index
+        if(surfaceDept + uShadowBias <= shadowDept){
+            fragColor = vec4(vec3(0), 1);
+            return;
+        }
     }
-    
+
     fragColor = vec4(1);
 }
