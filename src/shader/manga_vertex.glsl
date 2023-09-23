@@ -2,7 +2,7 @@ precision mediump float;
 
 #include "lib/shadow.glsl"
 
-uniform LightInfo[MAX_LIGHT_SOURCES] uLightInfos;
+uniform LightInfo[MAX_LIGHT_SOURCES + 1] uLightInfos;
 
 out vec4 vShadowPerspectiveGlobalPosition;
 out vec4 vShadowPerspectiveGlobalOriginPosition;

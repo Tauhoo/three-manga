@@ -24,6 +24,12 @@ type LightInfo = {
 }
 
 const blackColor = new THREE.Color(0, 0, 0)
+const emptyLightInfoUniform: LightInfoUniform = {
+  cameraP: new THREE.Matrix4(),
+  cameraV: new THREE.Matrix4(),
+  position: new THREE.Vector3(),
+  deptMap: new THREE.Texture(),
+}
 const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
 
@@ -79,7 +85,7 @@ class MangaShaderManager {
     })
 
     this.uniform = {
-      uLightInfos: { value: lightInfoUniform },
+      uLightInfos: { value: [...lightInfoUniform, emptyLightInfoUniform] },
       uNormalMap: { value: null },
       uDeptMap: { value: null },
       uResolution: { value: params.resolution },

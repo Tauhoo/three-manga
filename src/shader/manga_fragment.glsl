@@ -3,7 +3,7 @@ precision mediump float;
 #include "lib/shadow.glsl"
 #include "lib/line.glsl"
 
-uniform LightInfo[MAX_LIGHT_SOURCES] uLightInfos;
+uniform LightInfo[MAX_LIGHT_SOURCES + 1] uLightInfos;
 uniform sampler2D uNormalMap;
 uniform sampler2D uDeptMap;
 uniform vec2 uResolution;
@@ -43,5 +43,6 @@ void main()
         fragColor = vec4(vec3(0), 1);
         return;
     }
+    
     fragColor = vec4(1);
 }
