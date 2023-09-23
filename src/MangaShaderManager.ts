@@ -6,6 +6,7 @@ import {
   LightInfoUniform,
 } from './MangaMaterial'
 import { MangaDirectionalLight, MangaLight } from './light'
+import { DepthMaterial } from './DepthMaterial'
 
 type MangaShaderManagerParams = {
   renderer: THREE.WebGLRenderer
@@ -39,6 +40,8 @@ const dummyLightInfoUniform: LightInfoUniform = {
   position: dummyLightInfo.light.position,
   deptMap: dummyLightInfo.deptRenderTarget.texture,
 }
+
+const depthMaterial = new DepthMaterial()
 
 class MangaShaderManager {
   readonly material: MangaMaterial
@@ -121,6 +124,7 @@ class MangaShaderManager {
     let currentClearColor = this.renderer.getClearColor(new THREE.Color())
     let currentClearAlpha = this.renderer.getClearAlpha()
     let currentBackgroundColor = this.scene.background
+    const existOverrideMaterial = this.scene.overrideMaterial
 
     this.renderer.setClearColor(blackColor, 0)
     this.renderer.setClearAlpha(0)
@@ -136,7 +140,7 @@ class MangaShaderManager {
 
     // render dept map
     this.renderer.setRenderTarget(this.deptRenderer)
-    this.uniform.uMode.value = MangaShaderMode.DEPT_MODE
+    this.scene.overrideMaterial = depthMaterial
     this.renderer.render(this.scene, this.camera)
 
     // render light dept map
@@ -144,7 +148,7 @@ class MangaShaderManager {
     this.uniform.uLightInfos.value = this.dummyLightInfoUniformList
     for (const info of this.lightInfoList) {
       this.renderer.setRenderTarget(info.deptRenderTarget)
-      this.uniform.uMode.value = MangaShaderMode.DEPT_MODE
+      this.scene.overrideMaterial = depthMaterial
       this.renderer.render(this.scene, info.light)
     }
     this.uniform.uLightInfos.value = lightInfoUniforms
@@ -158,6 +162,7 @@ class MangaShaderManager {
     this.renderer.setClearColor(currentClearColor)
     this.renderer.setClearAlpha(currentClearAlpha)
     this.scene.background = currentBackgroundColor
+    this.scene.overrideMaterial = existOverrideMaterial
   }
 }
 
