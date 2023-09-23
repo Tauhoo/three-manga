@@ -1,10 +1,5 @@
 import * as THREE from 'three'
-import {
-  MangaUniform,
-  MangaMaterial,
-  MangaShaderMode,
-  LightInfoUniform,
-} from './MangaMaterial'
+import { MangaUniform, MangaMaterial, LightInfoUniform } from './MangaMaterial'
 import { MangaDirectionalLight, MangaLight } from './light'
 import { DepthMaterial } from './DepthMaterial'
 import { NormalMaterial } from './NormalMaterial'
@@ -102,7 +97,6 @@ class MangaShaderManager {
     )
 
     this.uniform = {
-      uMode: { value: MangaShaderMode.MANGA_MODE },
       uLightInfos: { value: lightInfoUniform },
       uNormalMap: { value: null },
       uDeptMap: { value: null },
@@ -158,7 +152,6 @@ class MangaShaderManager {
     // restore data
     this.uniform.uDeptMap.value = this.deptRenderer.texture
     this.uniform.uNormalMap.value = this.faceNormalRenderer.texture
-    this.uniform.uMode.value = MangaShaderMode.MANGA_MODE
 
     this.renderer.setRenderTarget(currentRenderTarget)
     this.renderer.setClearColor(currentClearColor)

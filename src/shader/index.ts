@@ -7,16 +7,9 @@ import depthVertex from './depth_vertex.glsl'
 import normalFragment from './normal_fragment.glsl'
 import normalVertex from './normal_vertex.glsl'
 
-class MangaShaderMode {
-  static readonly FACE_NORMAL_MODE = 0
-  static readonly DEPT_MODE = 1
-  static readonly MANGA_MODE = 2
-}
-
 export {
   mangaFragment,
   mangaVertex,
-  MangaShaderMode,
   depthFragment,
   depthVertex,
   normalFragment,
