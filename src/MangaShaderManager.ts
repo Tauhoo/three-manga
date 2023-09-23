@@ -24,19 +24,6 @@ type LightInfo = {
 }
 
 const blackColor = new THREE.Color(0, 0, 0)
-const dummyLightInfo: LightInfo = {
-  light: new MangaDirectionalLight(),
-  deptRenderTarget: new THREE.WebGLRenderTarget(1, 1, {
-    format: THREE.RGBAFormat,
-  }),
-}
-const dummyLightInfoUniform: LightInfoUniform = {
-  cameraP: dummyLightInfo.light.projectionMatrix,
-  cameraV: dummyLightInfo.light.matrixWorldInverse,
-  position: dummyLightInfo.light.position,
-  deptMap: dummyLightInfo.deptRenderTarget.texture,
-}
-
 const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
 
@@ -49,7 +36,6 @@ class MangaShaderManager {
   private scene: THREE.Scene
   private camera: THREE.Camera
   private lightInfoList: LightInfo[]
-  private dummyLightInfoUniformList: LightInfoUniform[]
 
   constructor(params: MangaShaderManagerParams) {
     this.renderer = params.renderer
@@ -91,10 +77,6 @@ class MangaShaderManager {
         deptMap: info.deptRenderTarget.texture,
       } as LightInfoUniform
     })
-
-    this.dummyLightInfoUniformList = Array(lightInfoUniform.length).fill(
-      dummyLightInfoUniform
-    )
 
     this.uniform = {
       uLightInfos: { value: lightInfoUniform },
@@ -141,7 +123,6 @@ class MangaShaderManager {
 
     // render light dept map
     const lightInfoUniforms = this.uniform.uLightInfos.value
-    this.uniform.uLightInfos.value = this.dummyLightInfoUniformList
     for (const info of this.lightInfoList) {
       this.renderer.setRenderTarget(info.deptRenderTarget)
       this.scene.overrideMaterial = depthMaterial
