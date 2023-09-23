@@ -7,6 +7,7 @@ import {
 } from './MangaMaterial'
 import { MangaDirectionalLight, MangaLight } from './light'
 import { DepthMaterial } from './DepthMaterial'
+import { NormalMaterial } from './NormalMaterial'
 
 type MangaShaderManagerParams = {
   renderer: THREE.WebGLRenderer
@@ -42,6 +43,7 @@ const dummyLightInfoUniform: LightInfoUniform = {
 }
 
 const depthMaterial = new DepthMaterial()
+const normalMaterial = new NormalMaterial()
 
 class MangaShaderManager {
   readonly material: MangaMaterial
@@ -135,7 +137,7 @@ class MangaShaderManager {
 
     // render face normal map
     this.renderer.setRenderTarget(this.faceNormalRenderer)
-    this.uniform.uMode.value = MangaShaderMode.FACE_NORMAL_MODE
+    this.scene.overrideMaterial = normalMaterial
     this.renderer.render(this.scene, this.camera)
 
     // render dept map
