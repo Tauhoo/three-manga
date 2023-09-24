@@ -24,11 +24,6 @@ type MangaShaderManagerParams = {
   shadowBias?: number
 }
 
-type LightInfo = {
-  light: MangaLight
-  deptRenderTarget: THREE.WebGLRenderTarget
-}
-
 const blackColor = new THREE.Color(0, 0, 0)
 const emptyLightInfoUniform: LightInfoUniform = {
   cameraP: new THREE.Matrix4(),
@@ -51,7 +46,6 @@ class MangaShaderManager {
   private renderer: THREE.WebGLRenderer
   private scene: THREE.Scene
   private camera: THREE.Camera
-  private lightInfoList: LightInfo[]
   private mangaLightManager: MangaLightManager
 
   constructor(params: MangaShaderManagerParams) {
@@ -139,13 +133,6 @@ class MangaShaderManager {
     this.renderer.render(this.scene, this.camera)
 
     // render light dept map
-    // const lightInfoUniforms = this.uniform.uLightInfos.value
-    // for (const info of this.lightInfoList) {
-    //   this.renderer.setRenderTarget(info.deptRenderTarget)
-    //   this.scene.overrideMaterial = depthMaterial
-    //   this.renderer.render(this.scene, info.light)
-    // }
-    // this.uniform.uLightInfos.value = lightInfoUniforms
     this.mangaLightManager.update()
 
     // restore data

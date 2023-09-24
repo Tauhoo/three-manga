@@ -11,6 +11,7 @@ function App() {
   const sceneRef = useRef<THREE.Scene | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
   const mangaShaderManagerRef = useRef<MangaShaderManager | null>(null)
+  const meshRef = useRef<THREE.Mesh | null>(null)
 
   const animate = () => {
     if (rendererRef.current == null) return
@@ -18,12 +19,14 @@ function App() {
     if (sceneRef.current == null) return
     if (controlsRef.current == null) return
     if (mangaShaderManagerRef.current == null) return
+    if (meshRef.current == null) return
 
     const renderer = rendererRef.current
     const camera = cameraRef.current
     const scene = sceneRef.current
     const controls = controlsRef.current
     const mangaShaderManager = mangaShaderManagerRef.current
+    meshRef.current.rotation.y += 0.01
     controls.update()
     mangaShaderManager.update()
     renderer.render(scene, camera)
@@ -98,6 +101,7 @@ function App() {
     cameraRef.current = camera
     sceneRef.current = scene
     controlsRef.current = controls
+    meshRef.current = mesh
     mangaShaderManagerRef.current = mangaShaderManager
 
     animate()
