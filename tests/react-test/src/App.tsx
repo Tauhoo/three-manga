@@ -26,7 +26,7 @@ function App() {
     const scene = sceneRef.current
     const controls = controlsRef.current
     const mangaShaderManager = mangaShaderManagerRef.current
-    meshRef.current.rotation.y += 0.01
+    // meshRef.current.rotation.y += 0.01
     controls.update()
     mangaShaderManager.update()
     renderer.render(scene, camera)
@@ -73,9 +73,10 @@ function App() {
       intlinePixelStep: 4,
       inlineThreshold: 0.8,
       shadowBias: 0.001,
+      shadowDepthTexturepixelsPerUnit: 1024 * 2,
     })
 
-    const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 100, 50)
+    const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 400, 100)
     const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
     mesh.receiveShadow = true
     mesh.castShadow = true

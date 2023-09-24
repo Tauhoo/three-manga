@@ -3,6 +3,8 @@ precision mediump float;
 #include "lib/shadow.glsl"
 #include "lib/line.glsl"
 
+const int AVG_SHADOW_SIZE = 5;
+
 uniform vec2 uResolution;
 
 // use for render shadow
@@ -51,18 +53,25 @@ void main()
         vec2 portionResolution = uShadowDepthMapPortions[index].resolution;
         vec2 portionOffset = uShadowDepthMapPortions[index].offset;
 
-        float shadowDept = getDeptFromTexel(
-            uShadowDepthMap, 
-            portionOffset + portionResolution * (shadowDeptMapUV + 1.) / 2.,
-            uShadowDepthMapResolution
-        );
+        float avgShadowScale = 0.;
+        for(int offsetX = -1 * AVG_SHADOW_SIZE / 2; offsetX < AVG_SHADOW_SIZE / 2 + 1; offsetX++){
+            for(int offsetY = -1 * AVG_SHADOW_SIZE / 2; offsetY < AVG_SHADOW_SIZE / 2 + 1; offsetY++){
+                float shadowDept = getDeptFromTexel(
+                    uShadowDepthMap, 
+                    portionOffset + portionResolution * (shadowDeptMapUV + 1.) / 2. + vec2(offsetX, offsetY),
+                    uShadowDepthMapResolution
+                );
 
-        if(surfaceDept + uShadowBias <= shadowDept){
-            shadowScale += 0.;
-        }else{
-            shadowScale += 1./float(MAX_LIGHT_SOURCES);
+                if(surfaceDept + uShadowBias > shadowDept){
+                    avgShadowScale += 0.;
+                }else{
+                    avgShadowScale += 1. / float(AVG_SHADOW_SIZE * AVG_SHADOW_SIZE);
+                }
+            }
         }
+        
+        shadowScale += avgShadowScale / float(MAX_LIGHT_SOURCES);
     }
 
-    fragColor = vec4(vec3(shadowScale),1);
+    fragColor = vec4(vec3(1. - shadowScale),1);
 }
