@@ -53,13 +53,17 @@ function App() {
       10000
     )
     const controls = new OrbitControls(camera, renderer.domElement)
-    const mangaLight = new MangaDirectionalLight(-2, 2, 2, -2, 1, 3)
+    const mangaLight = new MangaDirectionalLight(-2, 2, 2, -2, 1, 5)
+    const mangaLight2 = new MangaDirectionalLight(-2, 2, 2, -2, 1, 5)
+
+    const mangaLightHelper = new THREE.CameraHelper(mangaLight)
+    const mangaLight2Helper = new THREE.CameraHelper(mangaLight2)
 
     const mangaShaderManager = new MangaShaderManager({
       renderer: renderer,
       scene: scene,
       camera: camera,
-      lightList: [mangaLight],
+      lightList: [mangaLight, mangaLight2],
       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
       outlinePixelStep: 4,
       outlineThreshold: 0.1,
@@ -73,9 +77,22 @@ function App() {
     mesh.receiveShadow = true
     mesh.castShadow = true
 
-    scene.add(mesh)
     camera.position.z = 3
     mangaLight.position.z += 2
+    mangaLight.position.x += 2
+    mangaLight.position.y += 2
+    mangaLight.lookAt(mesh.position)
+
+    mangaLight2.position.z -= 2
+    mangaLight2.position.x -= 2
+    mangaLight2.position.y += 2
+    mangaLight2.lookAt(mesh.position)
+
+    scene.add(mesh)
+    scene.add(mangaLight)
+    scene.add(mangaLight2)
+    scene.add(mangaLightHelper)
+    scene.add(mangaLight2Helper)
 
     rendererRef.current = renderer
     cameraRef.current = camera

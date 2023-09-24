@@ -5,6 +5,11 @@ struct LightInfo {
     sampler2D deptMap;
 };
 
+struct LightTexturePortion {
+    vec2 resolution;
+    vec2 offset;
+};
+
 vec4 getShadowPerspectivePosition(
     mat4 cameraP,
     mat4 cameraV,

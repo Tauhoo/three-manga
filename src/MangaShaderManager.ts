@@ -1,8 +1,14 @@
 import * as THREE from 'three'
-import { MangaUniform, MangaMaterial, LightInfoUniform } from './MangaMaterial'
-import { MangaDirectionalLight, MangaLight } from './light'
+import {
+  MangaUniform,
+  MangaMaterial,
+  LightInfoUniform,
+  LightTexturePortionUniform,
+} from './MangaMaterial'
+import { MangaLight } from './light'
 import { DepthMaterial } from './DepthMaterial'
 import { NormalMaterial } from './NormalMaterial'
+import MangaLightManager from './light/MangaLightManager'
 
 type MangaShaderManagerParams = {
   renderer: THREE.WebGLRenderer
@@ -28,7 +34,11 @@ const emptyLightInfoUniform: LightInfoUniform = {
   cameraP: new THREE.Matrix4(),
   cameraV: new THREE.Matrix4(),
   position: new THREE.Vector3(),
-  deptMap: new THREE.Texture(),
+}
+
+const emptyLightTexturePortionUniform: LightTexturePortionUniform = {
+  resolution: new THREE.Vector2(),
+  offset: new THREE.Vector2(),
 }
 const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
@@ -42,6 +52,7 @@ class MangaShaderManager {
   private scene: THREE.Scene
   private camera: THREE.Camera
   private lightInfoList: LightInfo[]
+  private mangaLightManager: MangaLightManager
 
   constructor(params: MangaShaderManagerParams) {
     this.renderer = params.renderer
@@ -60,32 +71,32 @@ class MangaShaderManager {
       { format: THREE.RGBAFormat }
     )
 
-    this.lightInfoList = params.lightList.map<LightInfo>(light => {
-      const lightRenderTarget = new THREE.WebGLRenderTarget(
-        (light.right - light.left) * params.shadowDepthTexturepixelsPerUnit ||
-          1024,
-        (light.top - light.bottom) * params.shadowDepthTexturepixelsPerUnit ||
-          1024,
-        { format: THREE.RGBAFormat }
-      )
-
-      return {
-        light,
-        deptRenderTarget: lightRenderTarget,
-      } as LightInfo
-    })
-
-    const lightInfoUniform = this.lightInfoList.map<LightInfoUniform>(info => {
-      return {
-        cameraP: info.light.projectionMatrix,
-        cameraV: info.light.matrixWorldInverse,
-        position: info.light.position,
-        deptMap: info.deptRenderTarget.texture,
-      } as LightInfoUniform
+    this.mangaLightManager = new MangaLightManager({
+      lightList: params.lightList,
+      scene: params.scene,
+      renderer: params.renderer,
+      shadowDepthTexturepixelsPerUnit: params.shadowDepthTexturepixelsPerUnit,
     })
 
     this.uniform = {
-      uLightInfos: { value: [...lightInfoUniform, emptyLightInfoUniform] },
+      uLightInfos: {
+        value: [...this.mangaLightManager.lightInfoList, emptyLightInfoUniform],
+      },
+      uShadowDepthMapPortions: {
+        value: [
+          ...this.mangaLightManager.lightDepthMapPortionList,
+          emptyLightTexturePortionUniform,
+        ],
+      },
+      uShadowDepthMap: {
+        value: this.mangaLightManager.depthMapRenderTarget.texture,
+      },
+      uShadowDepthMapResolution: {
+        value: new THREE.Vector2(
+          this.mangaLightManager.depthMapRenderTarget.width,
+          this.mangaLightManager.depthMapRenderTarget.height
+        ),
+      },
       uNormalMap: { value: null },
       uDeptMap: { value: null },
       uResolution: { value: params.resolution },
@@ -128,13 +139,14 @@ class MangaShaderManager {
     this.renderer.render(this.scene, this.camera)
 
     // render light dept map
-    const lightInfoUniforms = this.uniform.uLightInfos.value
-    for (const info of this.lightInfoList) {
-      this.renderer.setRenderTarget(info.deptRenderTarget)
-      this.scene.overrideMaterial = depthMaterial
-      this.renderer.render(this.scene, info.light)
-    }
-    this.uniform.uLightInfos.value = lightInfoUniforms
+    // const lightInfoUniforms = this.uniform.uLightInfos.value
+    // for (const info of this.lightInfoList) {
+    //   this.renderer.setRenderTarget(info.deptRenderTarget)
+    //   this.scene.overrideMaterial = depthMaterial
+    //   this.renderer.render(this.scene, info.light)
+    // }
+    // this.uniform.uLightInfos.value = lightInfoUniforms
+    this.mangaLightManager.update()
 
     // restore data
     this.uniform.uDeptMap.value = this.deptRenderer.texture
