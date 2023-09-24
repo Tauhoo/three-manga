@@ -43,6 +43,7 @@ void main()
     }
 
     // calculate shadow
+    float shadowScale = 0.;
     for(int index = 0; index < MAX_LIGHT_SOURCES; index++){
         float surfaceDept = (vShadowPerspectiveGlobalOriginPosition[index].z - vShadowPerspectiveGlobalPosition[index].z) * 0.8 * 0.5 + 0.5;
         vec2 shadowDeptMapUV = vShadowPerspectiveGlobalPosition[index].xy / vShadowPerspectiveGlobalPosition[index].w;
@@ -57,14 +58,11 @@ void main()
         );
 
         if(surfaceDept + uShadowBias <= shadowDept){
-            fragColor = vec4(vec3(0), 1);
-            return;
+            shadowScale += 0.;
+        }else{
+            shadowScale += 1./float(MAX_LIGHT_SOURCES);
         }
     }
 
-    // debug
-    // vec4 texel = getTexel(uShadowDepthMap, gl_FragCoord.xy, uResolution);
-    // fragColor = texel;
-
-    fragColor = vec4(1);
+    fragColor = vec4(vec3(shadowScale),1);
 }
