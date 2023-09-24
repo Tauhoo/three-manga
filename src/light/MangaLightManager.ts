@@ -69,7 +69,10 @@ class MangaLightManager {
   update() {
     const existOverideMaterial = this.scene.overrideMaterial
     const existRenderTarget = this.renderer.getRenderTarget()
+    const existAutoClear = this.renderer.autoClear
     this.renderer.setRenderTarget(this.depthMapRenderTarget)
+    this.renderer.autoClear = false
+    this.renderer.clear()
 
     this.scene.overrideMaterial = depthMaterial
     for (let index = 0; index < this.lightList.length; index++) {
@@ -91,6 +94,7 @@ class MangaLightManager {
     }
 
     this.renderer.setRenderTarget(existRenderTarget)
+    this.renderer.autoClear = existAutoClear
     this.scene.overrideMaterial = existOverideMaterial
   }
 }
