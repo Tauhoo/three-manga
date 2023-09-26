@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { mangaFragment, mangaVertex } from './shader'
+import { mangaFragment, mangaVertex, SHADOW_PATTERN } from './shader'
 import { LightInfo, LightTexturePortion } from './light/MangaLightManager'
 
 type LightInfoUniform = LightInfo
@@ -24,6 +24,7 @@ type MangaUniform = {
   uShadowDepthMap: THREE.IUniform<THREE.Texture | null>
   uShadowDepthMapResolution: THREE.IUniform<THREE.Vec2>
   uShadowBias: THREE.IUniform<number>
+  uShadowPattern: THREE.IUniform<SHADOW_PATTERN> // user editable
   // use for render line
   uNormalMap: THREE.IUniform<THREE.Texture | null>
   uDeptMap: THREE.IUniform<THREE.Texture | null>
@@ -41,6 +42,7 @@ type MaterialOptions = {
   outlineThreshold?: number
   inlinePixelStep?: number
   inlineThreshold?: number
+  shadowPattern?: SHADOW_PATTERN
   hatchingVoronoiBaseCellSize?: number
   hatchingVoronoiCellWallPadding?: number
 }
@@ -90,6 +92,7 @@ function createUniform(
     uHatchingVoronoiCellWallPadding: {
       value: options.hatchingVoronoiCellWallPadding ?? 10,
     },
+    uShadowPattern: { value: options.shadowPattern ?? 0 },
   }
 }
 
@@ -100,4 +103,5 @@ export {
   LightTexturePortionUniform,
   MangaUniformData,
   MaterialOptions,
+  SHADOW_PATTERN,
 }

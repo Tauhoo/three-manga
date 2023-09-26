@@ -72,7 +72,7 @@ function App() {
       shadowBias: 0.001,
       shadowDepthTexturepixelsPerUnit: 1024 * 2,
     })
-    const material = mangaShaderManager.getMangaMaterial()
+    const material = mangaShaderManager.getMangaMaterial({ shadowPattern: 1 })
     const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 400, 100)
     const mesh = new THREE.Mesh(geometry, material)
     mesh.receiveShadow = true

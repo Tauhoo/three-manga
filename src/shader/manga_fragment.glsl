@@ -14,6 +14,7 @@ uniform vec2 uShadowDepthMapResolution;
 uniform float uShadowBias;
 uniform LightInfo[MAX_LIGHT_SOURCES + 1] uLightInfos;
 uniform LightTexturePortion[MAX_LIGHT_SOURCES + 1] uShadowDepthMapPortions;
+uniform int uShadowPattern;
 
 // use for render hatching shadow pattern
 uniform float uHatchingVoronoiBaseCellSize; // user editable
@@ -77,12 +78,18 @@ void main()
         
         shadowScale += avgShadowScale / float(MAX_LIGHT_SOURCES);
     }
-    
-    if(layeredHatching(gl_FragCoord.xy * (1. + 2. * gl_FragCoord.z), uHatchingVoronoiBaseCellSize, uHatchingVoronoiCellWallPadding, shadowScale) == 1.){
-        fragColor = vec4(vec3(0),1);
-        return;
+
+    if(uShadowPattern == BASIC_SHADOW_PATTERN){
+        fragColor = vec4(vec3(1. - shadowScale), 1);
+    }
+
+    if(uShadowPattern == HATCHING_SHADOW_PATTERN){
+        if(layeredHatching(gl_FragCoord.xy * (1. + 2. * gl_FragCoord.z), uHatchingVoronoiBaseCellSize, uHatchingVoronoiCellWallPadding, shadowScale) == 1.){
+            fragColor = vec4(vec3(0),1);
+            return;
+        }
+        fragColor = vec4(1);
     }
     
-    fragColor = vec4(1);
 
 }

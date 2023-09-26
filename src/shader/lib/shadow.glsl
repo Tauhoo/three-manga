@@ -1,3 +1,6 @@
+#define BASIC_SHADOW_PATTERN 0
+#define HATCHING_SHADOW_PATTERN 1 
+
 struct LightInfo { 
     mat4 cameraP;
     mat4 cameraV;
