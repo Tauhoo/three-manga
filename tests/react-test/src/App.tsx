@@ -78,7 +78,7 @@ function App() {
     })
 
     const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 400, 100)
-    const mesh = new THREE.Mesh(geometry, mangaShaderManager.material)
+    const mesh = new THREE.Mesh(geometry, mangaShaderManager.getMangaMaterial())
     mesh.receiveShadow = true
     mesh.castShadow = true
 

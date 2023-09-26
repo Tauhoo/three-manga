@@ -39,7 +39,6 @@ const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
 
 class MangaShaderManager {
-  readonly material: MangaMaterial
   private uniform: MangaUniform
   private faceNormalRenderer: THREE.WebGLRenderTarget
   private deptRenderer: THREE.WebGLRenderTarget
@@ -100,11 +99,6 @@ class MangaShaderManager {
       uInlineThreshold: { value: params.inlineThreshold || 0.5 },
       uShadowBias: { value: params.shadowBias || 0.001 },
     }
-
-    this.material = new MangaMaterial({
-      uniforms: this.uniform,
-      maxLightSources: params.lightList.length,
-    })
   }
 
   update = () => {
@@ -144,6 +138,13 @@ class MangaShaderManager {
     this.renderer.setClearAlpha(currentClearAlpha)
     this.scene.background = currentBackgroundColor
     this.scene.overrideMaterial = existOverrideMaterial
+  }
+
+  getMangaMaterial() {
+    return new MangaMaterial({
+      uniforms: this.uniform,
+      maxLightSources: this.mangaLightManager.maxLightSource,
+    })
   }
 }
 

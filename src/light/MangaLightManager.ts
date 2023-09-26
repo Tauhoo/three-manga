@@ -66,6 +66,10 @@ class MangaLightManager {
     this.depthMapRenderTarget = new THREE.WebGLRenderTarget(accWidth, maxHeight)
   }
 
+  get maxLightSource() {
+    return this.lightList.length
+  }
+
   update() {
     const existOverideMaterial = this.scene.overrideMaterial
     const existRenderTarget = this.renderer.getRenderTarget()
