@@ -27,10 +27,10 @@ type MangaUniform = {
   // use for render line
   uNormalMap: THREE.IUniform<THREE.Texture | null>
   uDeptMap: THREE.IUniform<THREE.Texture | null>
-  uOutlinePixelStep: THREE.IUniform<number>
-  uOutlineThreshold: THREE.IUniform<number>
-  uInlinePixelStep: THREE.IUniform<number>
-  uInlineThreshold: THREE.IUniform<number>
+  uOutlinePixelStep: THREE.IUniform<number> // user editable
+  uOutlineThreshold: THREE.IUniform<number> // user editable
+  uInlinePixelStep: THREE.IUniform<number> // user editable
+  uInlineThreshold: THREE.IUniform<number> // user editable
 }
 
 type MaterialOptions = {

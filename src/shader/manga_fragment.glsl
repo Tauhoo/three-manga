@@ -18,10 +18,10 @@ uniform LightTexturePortion[MAX_LIGHT_SOURCES + 1] uShadowDepthMapPortions;
 // user for render line
 uniform sampler2D uNormalMap;
 uniform sampler2D uDeptMap;
-uniform float uOutlinePixelStep;
-uniform float uOutlineThreshold;
-uniform float uInlinePixelStep;
-uniform float uInlineThreshold;
+uniform float uOutlinePixelStep; // user editable
+uniform float uOutlineThreshold; // user editable
+uniform float uInlinePixelStep; // user editable
+uniform float uInlineThreshold; // user editable
 
 // use for render shadow
 in vec4[MAX_LIGHT_SOURCES + 1] vShadowPerspectiveGlobalPosition;
