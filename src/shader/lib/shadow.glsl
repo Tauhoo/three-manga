@@ -18,4 +18,3 @@ vec4 getShadowPerspectivePosition(
 ) {
     return cameraP * cameraV * modelMatrix * originPosition;
 }
-

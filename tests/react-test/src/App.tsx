@@ -26,7 +26,7 @@ function App() {
     const scene = sceneRef.current
     const controls = controlsRef.current
     const mangaShaderManager = mangaShaderManagerRef.current
-    // meshRef.current.rotation.y += 0.01
+    meshRef.current.rotation.y += 0.01
     controls.update()
     mangaShaderManager.update()
     renderer.render(scene, camera)
@@ -43,6 +43,7 @@ function App() {
     if (containerRef.current == null) return
 
     const renderer = new THREE.WebGLRenderer({ alpha: true })
+    renderer.pixelRatio = window.devicePixelRatio
     renderer.shadowMap.enabled = true
 
     renderer.setSize(window.innerWidth, window.innerHeight)
