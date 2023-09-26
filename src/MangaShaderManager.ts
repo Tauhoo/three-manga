@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 import {
-  MangaUniform,
+  MangaUniformData,
   MangaMaterial,
   LightInfoUniform,
   LightTexturePortionUniform,
+  MaterialOptions,
 } from './MangaMaterial'
 import { MangaLight } from './light'
 import { DepthMaterial } from './DepthMaterial'
@@ -16,10 +17,6 @@ type MangaShaderManagerParams = {
   camera: THREE.Camera
   lightList: MangaLight[]
   resolution: THREE.Vector2
-  outlinePixelStep?: number
-  outlineThreshold?: number
-  intlinePixelStep?: number
-  inlineThreshold?: number
   shadowDepthTexturepixelsPerUnit?: number
   shadowBias?: number
 }
@@ -39,7 +36,7 @@ const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
 
 class MangaShaderManager {
-  private uniform: MangaUniform
+  private uniformData: MangaUniformData
   private faceNormalRenderer: THREE.WebGLRenderTarget
   private deptRenderer: THREE.WebGLRenderTarget
   private renderer: THREE.WebGLRenderer
@@ -71,33 +68,24 @@ class MangaShaderManager {
       shadowDepthTexturepixelsPerUnit: params.shadowDepthTexturepixelsPerUnit,
     })
 
-    this.uniform = {
-      uLightInfos: {
-        value: [...this.mangaLightManager.lightInfoList, emptyLightInfoUniform],
-      },
-      uShadowDepthMapPortions: {
-        value: [
-          ...this.mangaLightManager.lightDepthMapPortionList,
-          emptyLightTexturePortionUniform,
-        ],
-      },
-      uShadowDepthMap: {
-        value: this.mangaLightManager.depthMapRenderTarget.texture,
-      },
-      uShadowDepthMapResolution: {
-        value: new THREE.Vector2(
-          this.mangaLightManager.depthMapRenderTarget.width,
-          this.mangaLightManager.depthMapRenderTarget.height
-        ),
-      },
-      uNormalMap: { value: null },
-      uDeptMap: { value: null },
-      uResolution: { value: params.resolution },
-      uOutlinePixelStep: { value: params.outlinePixelStep || 2 },
-      uOutlineThreshold: { value: params.outlineThreshold || 0.5 },
-      uInlinePixelStep: { value: params.intlinePixelStep || 2 },
-      uInlineThreshold: { value: params.inlineThreshold || 0.5 },
-      uShadowBias: { value: params.shadowBias || 0.001 },
+    this.uniformData = {
+      lightInfos: [
+        ...this.mangaLightManager.lightInfoList,
+        emptyLightInfoUniform,
+      ],
+      shadowDepthMapPortions: [
+        ...this.mangaLightManager.lightDepthMapPortionList,
+        emptyLightTexturePortionUniform,
+      ],
+      shadowDepthMap: this.mangaLightManager.depthMapRenderTarget.texture,
+      shadowDepthMapResolution: new THREE.Vector2(
+        this.mangaLightManager.depthMapRenderTarget.width,
+        this.mangaLightManager.depthMapRenderTarget.height
+      ),
+      normalMap: this.faceNormalRenderer.texture,
+      deptMap: this.deptRenderer.texture,
+      resolution: params.resolution,
+      shadowBias: params.shadowBias || 0.001,
     }
   }
 
@@ -113,9 +101,6 @@ class MangaShaderManager {
     this.renderer.setClearAlpha(0)
     this.scene.background = null
 
-    this.uniform.uDeptMap.value = null
-    this.uniform.uNormalMap.value = null
-
     // render face normal map
     this.renderer.setRenderTarget(this.faceNormalRenderer)
     this.scene.overrideMaterial = normalMaterial
@@ -129,10 +114,6 @@ class MangaShaderManager {
     // render light dept map
     this.mangaLightManager.update()
 
-    // restore data
-    this.uniform.uDeptMap.value = this.deptRenderer.texture
-    this.uniform.uNormalMap.value = this.faceNormalRenderer.texture
-
     this.renderer.setRenderTarget(currentRenderTarget)
     this.renderer.setClearColor(currentClearColor)
     this.renderer.setClearAlpha(currentClearAlpha)
@@ -140,10 +121,11 @@ class MangaShaderManager {
     this.scene.overrideMaterial = existOverrideMaterial
   }
 
-  getMangaMaterial() {
+  getMangaMaterial(options?: MaterialOptions) {
     return new MangaMaterial({
-      uniforms: this.uniform,
+      uniformData: this.uniformData,
       maxLightSources: this.mangaLightManager.maxLightSource,
+      options: options ?? {},
     })
   }
 }

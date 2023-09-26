@@ -69,16 +69,12 @@ function App() {
       camera: camera,
       lightList: [mangaLight, mangaLight2],
       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
-      outlinePixelStep: 4,
-      outlineThreshold: 0.1,
-      intlinePixelStep: 4,
-      inlineThreshold: 0.8,
       shadowBias: 0.001,
       shadowDepthTexturepixelsPerUnit: 1024 * 2,
     })
-
+    const material = mangaShaderManager.getMangaMaterial()
     const geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 400, 100)
-    const mesh = new THREE.Mesh(geometry, mangaShaderManager.getMangaMaterial())
+    const mesh = new THREE.Mesh(geometry, material)
     mesh.receiveShadow = true
     mesh.castShadow = true
 
