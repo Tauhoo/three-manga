@@ -54,7 +54,7 @@ type MangaMaterialParams = {
 }
 
 class MangaMaterial extends THREE.ShaderMaterial {
-  readonly uniforms: { [uniform: string]: THREE.IUniform }
+  readonly uniforms: MangaUniform
   readonly vertexShader: string
   readonly fragmentShader: string
 
@@ -66,6 +66,62 @@ class MangaMaterial extends THREE.ShaderMaterial {
     this.glslVersion = THREE.GLSL3
     this.uniforms = createUniform(params.uniformData, params.options)
     this.defines = { MAX_LIGHT_SOURCES: params.maxLightSources }
+  }
+
+  get outlinePixelStep() {
+    return this.uniforms.uOutlinePixelStep.value
+  }
+
+  get outlineThreshold() {
+    return this.uniforms.uOutlineThreshold.value
+  }
+
+  get inlinePixelStep() {
+    return this.uniforms.uInlinePixelStep.value
+  }
+
+  get inlineThreshold() {
+    return this.uniforms.uInlineThreshold.value
+  }
+
+  get shadowPattern() {
+    return this.uniforms.uShadowPattern.value
+  }
+
+  get hatchingVoronoiBaseCellSize() {
+    return this.uniforms.uHatchingVoronoiBaseCellSize.value
+  }
+
+  get hatchingVoronoiCellWallPadding() {
+    return this.uniforms.uHatchingVoronoiCellWallPadding.value
+  }
+
+  set outlinePixelStep(value: number) {
+    this.uniforms.uOutlinePixelStep.value = value
+  }
+
+  set outlineThreshold(value: number) {
+    this.uniforms.uOutlineThreshold.value = value
+  }
+
+  set inlinePixelStep(value: number) {
+    this.uniforms.uInlinePixelStep.value = value
+  }
+
+  set inlineThreshold(value: number) {
+    this.uniforms.uInlineThreshold.value = value
+  }
+
+  set shadowPattern(value: number) {
+    this.uniforms.uShadowPattern.value = value
+  }
+
+  set hatchingVoronoiBaseCellSize(value: number) {
+    this.uniforms.uHatchingVoronoiBaseCellSize.value = value
+  }
+
+  set hatchingVoronoiCellWallPadding(value: number) {
+    this.uniforms.uHatchingVoronoiCellWallPadding.value = value
   }
 }
 
