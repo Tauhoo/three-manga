@@ -31,6 +31,9 @@ type MangaUniform = {
   uOutlineThreshold: THREE.IUniform<number> // user editable
   uInlinePixelStep: THREE.IUniform<number> // user editable
   uInlineThreshold: THREE.IUniform<number> // user editable
+  // use for render hatching shadow pattern
+  uHatchingVoronoiBaseCellSize: THREE.IUniform<number> // user editable
+  uHatchingVoronoiCellWallPadding: THREE.IUniform<number> // user editable
 }
 
 type MaterialOptions = {
@@ -38,6 +41,8 @@ type MaterialOptions = {
   outlineThreshold?: number
   inlinePixelStep?: number
   inlineThreshold?: number
+  hatchingVoronoiBaseCellSize?: number
+  hatchingVoronoiCellWallPadding?: number
 }
 
 type MangaMaterialParams = {
@@ -79,6 +84,12 @@ function createUniform(
     uOutlineThreshold: { value: options.outlineThreshold ?? 0.5 },
     uInlinePixelStep: { value: options.inlinePixelStep ?? 2 },
     uInlineThreshold: { value: options.inlineThreshold ?? 0.5 },
+    uHatchingVoronoiBaseCellSize: {
+      value: options.hatchingVoronoiBaseCellSize ?? 100,
+    },
+    uHatchingVoronoiCellWallPadding: {
+      value: options.hatchingVoronoiCellWallPadding ?? 10,
+    },
   }
 }
 
