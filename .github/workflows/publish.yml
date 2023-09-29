@@ -26,7 +26,7 @@ jobs:
 
       - name: Publish to npm
         run: |
-          $VERSION=$(cat package.json | jq -r '.version')
+          VERSION=$(cat package.json | jq -r '.version')
           if npm view three-manga@$VERSION version &> /dev/null; then
             echo "Version $VERSION already published. Skipping publish."
           else
