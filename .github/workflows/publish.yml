@@ -37,8 +37,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
 
+      - name: Zip module
+        run: zip -r three-manga-${{ github.ref_name }}.zip ./dist
+
       - name: Upload module
-        uses: actions/upload-artifact@v3
+        uses: softprops/action-gh-release@v1
         with:
-          name: three-manga
-          path: dist
+          files: three-manga-${{ github.ref_name }}.zip
