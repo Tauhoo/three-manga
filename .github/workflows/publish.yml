@@ -20,10 +20,10 @@ jobs:
 
       - name: Set up npm auth
         run: |
-          echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
-          npm login
+          echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+          npm login --auth-type legacy
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
 
       - name: Install Dependencies
         run: npm install
