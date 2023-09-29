@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Set up npm auth
+        run: echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+
       - name: Install Dependencies
         run: npm install
 
@@ -33,8 +38,6 @@ jobs:
             echo "Publishing version $VERSION"
             npm publish
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
 
       - name: Upload module
         uses: actions/upload-artifact@v3
