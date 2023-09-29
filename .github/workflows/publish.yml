@@ -17,13 +17,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "18"
-
-      - name: Set up npm auth
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-          npm login --auth-type legacy
-        env:
-          NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          registry-url: https://registry.npmjs.org
 
       - name: Install Dependencies
         run: npm install
@@ -38,8 +32,10 @@ jobs:
             echo "Version $VERSION already published. Skipping publish."
           else
             echo "Publishing version $VERSION"
-            npm publish
+            npm publish --access public
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
 
       - name: Upload module
         uses: actions/upload-artifact@v3
