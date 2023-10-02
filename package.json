@@ -1,6 +1,6 @@
 {
   "name": "three-manga",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library that provides manga like shader for ThreeJS",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
