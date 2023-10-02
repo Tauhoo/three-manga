@@ -159,5 +159,4 @@ export {
   LightTexturePortionUniform,
   MangaUniformData,
   MaterialOptions,
-  SHADOW_PATTERN,
 }
