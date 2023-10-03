@@ -139,7 +139,7 @@ function createUniform(
     uNormalMap: { value: data.normalMap },
     uDeptMap: { value: data.deptMap },
     uOutlinePixelStep: { value: options.outlinePixelStep ?? 2 },
-    uOutlineThreshold: { value: options.outlineThreshold ?? 0.5 },
+    uOutlineThreshold: { value: options.outlineThreshold ?? 0.01 },
     uInlinePixelStep: { value: options.inlinePixelStep ?? 2 },
     uInlineThreshold: { value: options.inlineThreshold ?? 0.5 },
     uHatchingVoronoiBaseCellSize: {
