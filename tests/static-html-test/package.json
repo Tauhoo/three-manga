@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cp ../../dist/browser/index.module.bundle.js ./public/three-manga.bundle.js && http-server ./public"
+    "start": "cp -r ../../dist ./public/dist && http-server ./public"
   },
   "author": "",
   "license": "ISC",
