@@ -2,8 +2,6 @@ import * as THREE from 'three'
 import {
   MangaUniformData,
   MangaMaterial,
-  LightInfoUniform,
-  LightTexturePortionUniform,
   MaterialOptions,
 } from './MangaMaterial'
 import { MangaDirectionalLight, MangaLight } from './light'
@@ -32,10 +30,11 @@ class MangaShaderManager {
   private uniformData: MangaUniformData
   private faceNormalRenderer: THREE.WebGLRenderTarget
   private deptRenderer: THREE.WebGLRenderTarget
-  private renderer: THREE.WebGLRenderer
-  private scene: THREE.Scene
-  private camera: THREE.Camera
   private mangaLightManager: MangaLightManager
+
+  renderer: THREE.WebGLRenderer
+  scene: THREE.Scene
+  camera: THREE.Camera
 
   constructor(params: MangaShaderManagerParams) {
     this.renderer = params.renderer
@@ -114,6 +113,17 @@ class MangaShaderManager {
       maxLightSources: this.mangaLightManager.maxLightSource - 1, // prevent shader to process empty light which is at the end of array
       options: options ?? {},
     })
+  }
+
+  getResolution() {
+    return this.uniformData.resolution.clone()
+  }
+
+  setResolution(value: THREE.Vector2) {
+    this.uniformData.resolution.x = value.x
+    this.uniformData.resolution.y = value.y
+    this.faceNormalRenderer.setSize(value.x, value.y)
+    this.faceNormalRenderer.setSize(value.x, value.y)
   }
 }
 

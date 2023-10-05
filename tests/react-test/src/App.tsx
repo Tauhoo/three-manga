@@ -1,10 +1,32 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { MangaDirectionalLight, MangaShaderManager } from 'three-manga'
 
+const useWindowSize = (): [number, number] => {
+  const [width, setWidth] = useState(0)
+  const [height, setHeight] = useState(0)
+
+  const onResize = () => {
+    if (typeof window === 'undefined') return
+    setWidth(window.innerWidth)
+    setHeight(window.innerHeight)
+  }
+
+  useEffect(() => {
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  return [width, height]
+}
+
 function App() {
+  const [width, height] = useWindowSize()
   const containerRef = useRef<HTMLDivElement>(null)
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
@@ -33,6 +55,20 @@ function App() {
 
     window.requestAnimationFrame(animate)
   }
+
+  useEffect(() => {
+    if (mangaShaderManagerRef.current === null) return
+    if (cameraRef.current == null) return
+    mangaShaderManagerRef.current.renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    )
+    mangaShaderManagerRef.current.setResolution(
+      new THREE.Vector2(window.innerWidth, window.innerHeight)
+    )
+    cameraRef.current.aspect = window.innerWidth / window.innerHeight
+    cameraRef.current.updateProjectionMatrix()
+  }, [width, height])
 
   useEffect(() => {
     if (rendererRef.current !== null) return
