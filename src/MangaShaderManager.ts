@@ -6,7 +6,7 @@ import {
   LightTexturePortionUniform,
   MaterialOptions,
 } from './MangaMaterial'
-import { MangaLight } from './light'
+import { MangaDirectionalLight, MangaLight } from './light'
 import { DepthMaterial } from './DepthMaterial'
 import { NormalMaterial } from './NormalMaterial'
 import MangaLightManager from './light/MangaLightManager'
@@ -22,16 +22,9 @@ type MangaShaderManagerParams = {
 }
 
 const blackColor = new THREE.Color(0, 0, 0)
-const emptyLightInfoUniform: LightInfoUniform = {
-  cameraP: new THREE.Matrix4(),
-  cameraV: new THREE.Matrix4(),
-  position: new THREE.Vector3(),
-}
 
-const emptyLightTexturePortionUniform: LightTexturePortionUniform = {
-  resolution: new THREE.Vector2(),
-  offset: new THREE.Vector2(),
-}
+const emptyLight = new MangaDirectionalLight(-0.1, 0.1, 0.1, -0.1, 0.1, 0.2)
+
 const depthMaterial = new DepthMaterial()
 const normalMaterial = new NormalMaterial()
 
@@ -62,21 +55,15 @@ class MangaShaderManager {
     )
 
     this.mangaLightManager = new MangaLightManager({
-      lightList: params.lightList,
+      lightList: [...params.lightList, emptyLight], // add empty light to prevent the cast uniform array length is 0. it will always be at least 1
       scene: params.scene,
       renderer: params.renderer,
       shadowDepthTexturepixelsPerUnit: params.shadowDepthTexturepixelsPerUnit,
     })
 
     this.uniformData = {
-      lightInfos: [
-        ...this.mangaLightManager.lightInfoList,
-        emptyLightInfoUniform,
-      ],
-      shadowDepthMapPortions: [
-        ...this.mangaLightManager.lightDepthMapPortionList,
-        emptyLightTexturePortionUniform,
-      ],
+      lightInfos: this.mangaLightManager.lightInfoList,
+      shadowDepthMapPortions: this.mangaLightManager.lightDepthMapPortionList,
       shadowDepthMap: this.mangaLightManager.depthMapRenderTarget.texture,
       shadowDepthMapResolution: new THREE.Vector2(
         this.mangaLightManager.depthMapRenderTarget.width,
@@ -124,7 +111,7 @@ class MangaShaderManager {
   getMangaMaterial(options?: MaterialOptions) {
     return new MangaMaterial({
       uniformData: this.uniformData,
-      maxLightSources: this.mangaLightManager.maxLightSource,
+      maxLightSources: this.mangaLightManager.maxLightSource - 1, // prevent shader to process empty light which is at the end of array
       options: options ?? {},
     })
   }
