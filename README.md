@@ -1,6 +1,6 @@
 # Three Manga
 
-This project is created for doing manga-style shader in ThreeJS. You can checkout the demo and document at [three-manga.tauhoo.dev](three-manga.tauhoo.dev)
+This project is created for doing manga-style shader in ThreeJS. You can checkout the demo and document at [three-manga.tauhoo.dev](https://three-manga.tauhoo.dev)
 
 <br>
 
